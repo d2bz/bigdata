@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -265,6 +266,14 @@ public class OrderRepository extends BaseHBaseRepository {
         }
         try {
             return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        } catch (DateTimeParseException ignored) {
+            try {
+                DateTimeFormatter legacyFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                return LocalDateTime.parse(dateTimeStr, legacyFormatter);
+            } catch (Exception e) {
+                log.error("Failed to parse date time: {}", dateTimeStr, e);
+                return null;
+            }
         } catch (Exception e) {
             log.error("Failed to parse date time: {}", dateTimeStr, e);
             return null;

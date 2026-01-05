@@ -1,6 +1,14 @@
 // 全局变量
 const API_BASE = '/sales/api';
 
+function formatMoney(value) {
+    const num = Number(value);
+    if (!Number.isFinite(num)) {
+        return '0.00';
+    }
+    return num.toFixed(2);
+}
+
 // 页面切换函数
 function showPage(pageId) {
     // 隐藏所有页面
@@ -53,7 +61,7 @@ async function loadDashboardData() {
         const dashboardResponse = await fetch(`${API_BASE}/analysis/dashboard`);
         const dashboardData = await dashboardResponse.json();
         
-        document.getElementById('todaySalesAmount').textContent = `¥ ${dashboardData.totalAmount.toFixed(2)}`;
+        document.getElementById('todaySalesAmount').textContent = `¥ ${formatMoney(dashboardData.totalAmount)}`;
         document.getElementById('todayOrderCount').textContent = dashboardData.orderCount;
         document.getElementById('todayUserCount').textContent = dashboardData.userCount;
         
@@ -104,7 +112,7 @@ function createProductCard(product) {
         <img src="${imageUrl}" alt="${product.name}" class="product-image">
         <div class="product-info">
             <div class="product-name">${product.name}</div>
-            <div class="product-price">¥ ${product.price.toFixed(2)}</div>
+            <div class="product-price">¥ ${formatMoney(product.price)}</div>
             <div class="product-stock">库存: ${product.realTimeStock || product.totalStock || 0}件 | 已售: ${product.saleCount || 0}件</div>
             <button class="btn btn-primary" onclick="viewProduct('${product.productId}')">
                 <i class="fas fa-eye"></i> 查看详情
@@ -145,7 +153,7 @@ function createOrderRow(order) {
     row.innerHTML = `
         <td>${order.orderId}</td>
         <td>${order.receiver || '未知客户'}</td>
-        <td>¥ ${order.actualAmount.toFixed(2)}</td>
+        <td>¥ ${formatMoney(order.actualAmount)}</td>
         <td><span class="status-badge ${statusClass}">${statusText}</span></td>
         <td>${formatDateTime(order.createTime)}</td>
         <td>

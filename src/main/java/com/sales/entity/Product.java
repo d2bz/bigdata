@@ -99,7 +99,7 @@ public class Product implements Serializable {
     
     // 检查是否可以购买
     public boolean isAvailable() {
-        return status.equals(Status.ON_SHELF.getCode()) && 
+        return Status.ON_SHELF.getCode().equals(status) &&
                (realTimeStock == null || realTimeStock > 0);
     }
     

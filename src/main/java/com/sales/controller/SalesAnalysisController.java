@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,13 @@ public class SalesAnalysisController {
             if (salesData != null) {
                 return ResponseEntity.ok(salesData);
             } else {
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.ok(com.sales.entity.SalesData.builder()
+                        .date(date)
+                        .saleCount(0L)
+                        .saleAmount(BigDecimal.ZERO)
+                        .refundCount(0L)
+                        .refundAmount(BigDecimal.ZERO)
+                        .build());
             }
         } catch (IOException e) {
             log.error("Failed to get daily sales data: date={}", date, e);
